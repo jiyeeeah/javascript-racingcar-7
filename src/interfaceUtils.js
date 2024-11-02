@@ -9,11 +9,10 @@ export function getInputAsync(message) {
   }
 }
 
-export function printCarsMove(carsMap) {
+export function printCarsMove(cars) {
   Console.print("");
-  carsMap.forEach((carMoveCount, carName) => {
-    const moveDash = "-".repeat(carMoveCount);
-    Console.print(`${carName} : ${moveDash}`);
+  cars.forEach((car) => {
+    Console.print(car.resultString());
   });
 }
 

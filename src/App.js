@@ -26,7 +26,7 @@ class App {
 
     for (let i = 0; i < trialCount; i++) {
       carsModel.moveCars();
-      printCarsMove(carsModel.getCarsMap());
+      printCarsMove(carsModel.getCars());
     }
 
     const winners = carsModel.getWinners();

@@ -1,20 +1,21 @@
 import { MissionUtils } from "@woowacourse/mission-utils";
 import RULES from "./constants/rule.js";
+import Car from "./Car.js";
 
 class CarsModel {
-  #carsMap;
+  #cars;
 
   constructor(input) {
-    const cars = input.split(",");
-    this.#carsMap = new Map(cars.map((car) => [car.trim(), 0]));
+    const carNames = input.split(",");
+    this.#cars = carNames.map((carName) => new Car(carName));
   }
 
   getCarNames() {
-    return [...this.#carsMap.keys()];
+    return [...this.#cars.map((car) => car.name)];
   }
 
-  getCarsMap() {
-    return this.#carsMap;
+  getCars() {
+    return this.#cars;
   }
 
   #isCarMove() {
@@ -27,17 +28,23 @@ class CarsModel {
   }
 
   moveCars() {
-    this.#carsMap.forEach((carMoveCount, carName) => {
-      if (this.#isCarMove()) this.#carsMap.set(carName, carMoveCount + 1);
+    this.#cars.forEach((car) => {
+      if (this.#isCarMove()) car.moveForward();
     });
   }
 
-  getWinners() {
-    const winningMoveCount = Math.max(...this.#carsMap.values());
+  #getMaxMoveCount() {
+    return this.#cars.reduce(
+      (maxCount, car) => car.getGreaterMoveCount(maxCount),
+      0,
+    );
+  }
 
+  getWinners() {
     const winners = [];
-    this.#carsMap.forEach((carMoveCount, carName) => {
-      if (carMoveCount === winningMoveCount) winners.push(carName);
+    this.#cars.forEach((car) => {
+      const maxCount = this.#getMaxMoveCount();
+      if (car.hasMaxMoveCount(maxCount)) winners.push(car.name);
     });
 
     return winners;
