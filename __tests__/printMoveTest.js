@@ -1,5 +1,6 @@
 import { MissionUtils } from "@woowacourse/mission-utils";
 import { printCarsMove, printWinners } from "../src/interfaceUtils.js";
+import Car from "../src/Car.js";
 
 const getLogSpy = () => {
   const logSpy = jest.spyOn(MissionUtils.Console, "print");
@@ -8,36 +9,30 @@ const getLogSpy = () => {
 };
 
 describe("자동차 전진 테스트", () => {
-  const carsMoveTest = [
-    [
-      [
-        ["hi", 2],
-        ["ji", 3],
-      ],
-      ["hi : --", "ji : ---"],
-    ],
-    [
-      [
-        ["jiye", 5],
-        ["Sarah", 8],
-        ["Jen", 20],
-      ],
-      ["jiye : -----", "Sarah : --------", "Jen : --------------------"],
-    ],
-  ];
-  test.each(carsMoveTest)("출력 테스트", (inp, print) => {
+  let logSpy;
+
+  beforeEach(() => {
+    logSpy = getLogSpy();
+  });
+
+  test("전진 출력 테스트", () => {
     // given
-    const input = new Map(inp);
-    const logs = print;
-    const logSpy = getLogSpy();
+    const carNames = ["jiye", "hello"];
+    const cars = carNames.map((name) => new Car(name));
 
     // when
-    printCarsMove(input);
+    cars.forEach((car) => {
+      if (car.name === "jiye") {
+        car.moveForward();
+        car.moveForward();
+      }
+    });
+    printCarsMove(cars);
 
     // then
-    logs.forEach((log) => {
-      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining(log));
-    });
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.stringContaining("jiye : --", "hello : "),
+    );
   });
 
   const winnersPrintTest = [
@@ -45,9 +40,6 @@ describe("자동차 전진 테스트", () => {
     [["Sarah"], "최종 우승자 : Sarah"],
   ];
   test.each(winnersPrintTest)("우승자 출력 테스트", (winners, print) => {
-    // given
-    const logSpy = getLogSpy();
-
     // when
     printWinners(winners);
 
